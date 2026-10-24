@@ -1,5 +1,6 @@
 package com.xiaohe.english.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -56,7 +57,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}) {
+fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: () -> Unit = {}) {
     var tab by remember { mutableIntStateOf(0) }
     var indexData by remember { mutableStateOf<IndexDataResponse?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -99,7 +100,7 @@ fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}) {
         },
     ) { padding ->
         when (tab) {
-            0 -> HomeTab(indexData, loading, error, padding, onLogout)
+            0 -> HomeTab(indexData, loading, error, padding, onLogout, onOpenWork)
             1 -> StudyTab(padding, onOpenStudy)
             2 -> ProfileTab(padding, onLogout)
         }
@@ -113,6 +114,7 @@ private fun HomeTab(
     error: String?,
     padding: androidx.compose.foundation.layout.PaddingValues,
     onLogout: () -> Unit,
+    onOpenWork: () -> Unit = {},
 ) {
     if (loading) {
         Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
@@ -150,6 +152,21 @@ private fun HomeTab(
                     if (student?.isVip == "1") {
                         AssistChip(onClick = {}, label = { Text("VIP 至 " + (student.vipEndTime ?: "")) })
                     }
+                }
+            }
+        }
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth().clickable { onOpenWork() },
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+            ) {
+                Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text("我的作业", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                        Spacer(Modifier.height(4.dp))
+                        Text("待完成 " + (data?.homeworkTotal ?: 0) + " 份", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                    Icon(Icons.Filled.School, null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
             }
         }

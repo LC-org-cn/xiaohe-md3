@@ -12,6 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import com.xiaohe.english.network.ApiClient
 import com.xiaohe.english.ui.screens.CatalogueDetailScreen
 import com.xiaohe.english.ui.screens.HomeScreen
+import com.xiaohe.english.ui.screens.HomeworkDetailScreen
+import com.xiaohe.english.ui.screens.HomeworkUnitScreen
+import com.xiaohe.english.ui.screens.WorkScreen
 import com.xiaohe.english.ui.screens.ListeningExerciseScreen
 import com.xiaohe.english.ui.screens.LoginScreen
 import com.xiaohe.english.ui.screens.SpeakingExerciseScreen
@@ -25,6 +28,9 @@ object Routes {
     const val CATALOGUE_DETAIL = "catalogue/{catalogueId}/{type}"
     const val LISTENING_EXERCISE = "exercise/listening/{exerciseId}"
     const val SPEAKING_EXERCISE = "exercise/speaking/{exerciseId}"
+    const val WORK_LIST = "work"
+    const val HOMEWORK_DETAIL = "homework/{homeworkId}"
+    const val HOMEWORK_UNIT = "homework-unit/{catalogueId}/{title}"
 }
 
 @Composable
@@ -54,6 +60,7 @@ fun AppRoot(isLoggedIn: Boolean) {
                     nav.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
                 },
                 onOpenStudy = { nav.navigate(Routes.STUDY) },
+                onOpenWork = { nav.navigate(Routes.WORK_LIST) },
             )
         }
         composable(Routes.STUDY) {
@@ -89,6 +96,35 @@ fun AppRoot(isLoggedIn: Boolean) {
             SpeakingExerciseScreen(
                 exerciseId = id,
                 onBack = { nav.popBackStack() },
+            )
+        }
+        composable(Routes.WORK_LIST) {
+            WorkScreen(
+                onBack = { nav.popBackStack() },
+                onOpenHomework = { homeworkId ->
+                    nav.navigate("homework/" + homeworkId)
+                },
+            )
+        }
+        composable(Routes.HOMEWORK_DETAIL) { entry ->
+            val homeworkId = entry.arguments?.getString("homeworkId")?.toLongOrNull() ?: 0L
+            HomeworkDetailScreen(
+                homeworkId = homeworkId,
+                onBack = { nav.popBackStack() },
+                onOpenUnit = { catalogueId, title ->
+                    nav.navigate("homework-unit/" + catalogueId + "/" + java.net.URLEncoder.encode(title, "UTF-8"))
+                },
+            )
+        }
+        composable(Routes.HOMEWORK_UNIT) { entry ->
+            val catalogueId = entry.arguments?.getString("catalogueId") ?: ""
+            val title = java.net.URLDecoder.decode(entry.arguments?.getString("title") ?: "单元", "UTF-8")
+            HomeworkUnitScreen(
+                studentRecordCatalogueId = catalogueId,
+                unitTitle = title,
+                studentRecordInfoId = null,
+                onBack = { nav.popBackStack() },
+                onFinished = { nav.popBackStack() },
             )
         }
     }

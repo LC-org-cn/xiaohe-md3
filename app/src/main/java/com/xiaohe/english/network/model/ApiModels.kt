@@ -230,9 +230,30 @@ data class CreateSelfPracticeRequest(
     val bookInfoId: Long = 0, val chapterInfoId: Long = 0, val practiceType: String? = null,
     val questionCount: Int = 0,
 )
-data class ExercisesInfo(
-    val checkFinished: Boolean? = null, val exercisesStudentRecordInfo: Any? = null,
+data data class ExercisesInfo(
+    val checkFinished: Boolean? = null,
+    val exercisesStudentRecordInfo: ExercisesStudentRecordInfo? = null,
     val generatedFinished: Boolean = false, val homeworkAnswerTimes: String? = null,
+)
+
+data class ExercisesStudentRecordInfo(
+    val createTime: Long? = null, val errorNumber: Int = 0, val errorRate: Float = 0f,
+    @com.google.gson.annotations.SerializedName("exercises_name") val exercisesName: String? = null,
+    val exercisesNum: Int = 0,
+    val exercisesStudentRecordCatalogueList: List<ExercisesStudentRecordCatalogue>? = null,
+    val exercisesType: String? = null, val finishedExercisesNum: Int = 0,
+    val generatedFinished: Boolean = false, val id: String? = null,
+    val maxScore: Double? = null, val studentScore: Double? = null,
+    val takeTime: Long = 0, val totalStudentRecordNum: Int? = null,
+)
+
+data class ExercisesStudentRecordCatalogue(
+    val exercisesCatalogueId: String? = null, val exercisesCatalogueTitle: String? = null,
+    val exercisesStudentRecordDetailList: List<java.util.Map<String, Any?>>? = null,
+    val exercisesType: String? = null, val id: String? = null,
+    val maxScore: Double? = null, val questionNum: Int = 0, val questionScore: Double? = null,
+    val scoreRate: Int? = null, val studentFinished: String? = null,
+    val studentRecordInfoId: String? = null, val studentScore: Double? = null,
 )
 data class CatalogueDetailQuestionInfoResponse(
     val total: Int = 0, val list: List<QuestionSpecialItem>? = null,
