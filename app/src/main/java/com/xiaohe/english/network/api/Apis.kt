@@ -16,7 +16,7 @@ interface AuthApiService {
     suspend fun logout(): BaseResponse<Any>
 
     @POST("/app-api/member/auth/refresh-token")
-    suspend fun refreshToken(@Query("refreshToken") refreshToken: String): BaseResponse<TokenInfo>
+    suspend fun refreshToken(@Query("refreshToken") refreshToken: String, @Body body: okhttp3.RequestBody = okhttp3.RequestBody.Companion.create(null, ByteArray(0))): BaseResponse<TokenInfo>
 
     @POST("/app-api/member/auth/send-sms-code")
     suspend fun sendSmsCode(@Query("mobile") mobile: String, @Query("scene") scene: Int): BaseResponse<Any>
