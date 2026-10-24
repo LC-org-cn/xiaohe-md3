@@ -38,7 +38,7 @@ fun StudyScreen(
             error = null
             val results = mapOf(
                 "listening" to runCatching { ApiClient.material.getExercisesSpecialCatalogue("listening", null, null, 1, 50, "") },
-                "speaking" to runCatching { ApiClient.study.getExercisesSpecialCatalogue("speaking", null, null, 1, 50, "") },
+                "speaking" to runCatching { ApiClient.material.getExercisesSpecialCatalogue("speaking", null, null, 1, 50, "") },
             )
             results["listening"]?.onSuccess { listeningItems = it.data?.list ?: emptyList() }
             results["listening"]?.onFailure { error = it.message }
