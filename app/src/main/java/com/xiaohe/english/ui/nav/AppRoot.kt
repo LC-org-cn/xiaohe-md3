@@ -42,8 +42,11 @@ fun AppRoot(isLoggedIn: Boolean) {
 
     LaunchedEffect(Unit) {
         ApiClient.onUnauthorized = {
-            authed = false
-            nav.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
+            // 可能在 OkHttp 后台线程被调用（token 刷新失败时），导航必须切回主线程
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                authed = false
+                nav.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
+            }
         }
     }
 
