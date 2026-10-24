@@ -38,7 +38,7 @@ fun HomeworkUnitScreen(
     LaunchedEffect(studentRecordCatalogueId) {
         scope.launch {
             loading = true; error = null
-            runCatching { ApiClient.study.getCatalogueDetailQuestionInfoList(studentRecordCatalogueId) }
+            runCatching { ApiClient.work.getCatalogueDetailQuestionInfoList(studentRecordCatalogueId) }
                 .onSuccess { r -> questions = r.data?.list ?: emptyList() }
                 .onFailure { error = it.message }
             loading = false
@@ -87,12 +87,12 @@ fun HomeworkUnitScreen(
 
                     val opts = q.options ?: emptyList()
                     opts.forEach { opt ->
-                        val selected = answers[q.questionId] == opt.code
+                        val selected = answers[q.questionId ?: ""] == opt.code
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .selectable(selected = selected, role = Role.RadioButton, onClick = {
-                                    answers[q.questionId] = opt.code ?: ""
+                                    answers[q.questionId ?: ""] = opt.code ?: ""
                                 }),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant,
@@ -121,7 +121,7 @@ fun HomeworkUnitScreen(
                                         // 逐题提交（与原版 submitAnswer 相同的 body 键）
                                         var submitError: String? = null
                                         for (item in questions) {
-                                            val ans = answers[item.questionId] ?: continue
+                                            val ans = answers[item.questionId ?: ""] ?: continue
                                             val body = buildMap {
                                                 put("id", item.questionId ?: "")
                                                 put("questionId", item.questionId ?: "")
@@ -142,7 +142,7 @@ fun HomeworkUnitScreen(
                                                 put("takeTime", 0L)
                                                 put("exercisesFinishQuestionReqVOList", emptyList<Any>())
                                             }
-                                            runCatching { ApiClient.study.finishExercises(finBody) }
+                                            runCatching { ApiClient.work.finishExercises(finBody) }
                                                 .onSuccess { finished = true }
                                                 .onFailure { error = it.message }
                                         } else {
@@ -153,7 +153,7 @@ fun HomeworkUnitScreen(
                                 }
                             },
                             modifier = Modifier.weight(1f),
-                            enabled = answers[q.questionId] != null && !submitting,
+                            enabled = answers[q.questionId ?: ""] != null && !submitting,
                         ) {
                             Text(if (idx < questions.size - 1) "下一题" else if (submitting) "提交中…" else "交卷")
                         }

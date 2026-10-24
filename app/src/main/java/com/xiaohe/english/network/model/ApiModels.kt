@@ -230,7 +230,7 @@ data class CreateSelfPracticeRequest(
     val bookInfoId: Long = 0, val chapterInfoId: Long = 0, val practiceType: String? = null,
     val questionCount: Int = 0,
 )
-data data class ExercisesInfo(
+data class ExercisesInfo(
     val checkFinished: Boolean? = null,
     val exercisesStudentRecordInfo: ExercisesStudentRecordInfo? = null,
     val generatedFinished: Boolean = false, val homeworkAnswerTimes: String? = null,

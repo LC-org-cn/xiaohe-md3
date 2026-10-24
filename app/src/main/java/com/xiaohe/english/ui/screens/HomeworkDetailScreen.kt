@@ -36,7 +36,7 @@ fun HomeworkDetailScreen(
             runCatching { ApiClient.work.getHomeworkPublishStudent(homeworkId.toString()) }
                 .onSuccess { title = it.data?.homeworkTitle ?: "作业" }
             // 原版流：getExercisesById 创建/取学生练习记录
-            runCatching { ApiClient.study.getExercisesById(homeworkId.toString()) }
+            runCatching { ApiClient.work.getExercisesById(homeworkId.toString()) }
                 .onSuccess { r -> recordInfo = r.data?.exercisesStudentRecordInfo }
                 .onFailure { error = it.message }
             loading = false

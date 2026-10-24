@@ -245,7 +245,7 @@ private fun ScoreRow(label: String, v: Float?) {
     }
 }
 @Composable
-private fun SpeakingResultView(score: Int, totalCount: Int, correctCount: Int, accuracy: Float, onBack: () -> Unit) {
+internal fun SpeakingResultView(score: Int, totalCount: Int, correctCount: Int, accuracy: Float, onBack: () -> Unit) {
     Column(
         Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
