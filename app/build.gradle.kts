@@ -9,6 +9,9 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        // OSS 凭证经 CI Secret（OSS_AK_ID/OSS_AK_SECRET）注入；与原版 APK 内嵌值一致
+        buildConfigField("String", "OSS_AK_ID", "\"${System.getenv("OSS_AK_ID") ?: project.findProperty("OSS_AK_ID") ?: ""}\"")
+        buildConfigField("String", "OSS_AK_SECRET", "\"${System.getenv("OSS_AK_SECRET") ?: project.findProperty("OSS_AK_SECRET") ?: ""}\"")
         applicationId = "com.shangheedu.xiaoheapp.md3"
         minSdk = 23
         targetSdk = 34
@@ -47,6 +50,7 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.13.1")
+    implementation("com.tencent.mm.opensdk:wechat-sdk-android:6.8.30")
     implementation("androidx.activity:activity-compose:1.9.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
