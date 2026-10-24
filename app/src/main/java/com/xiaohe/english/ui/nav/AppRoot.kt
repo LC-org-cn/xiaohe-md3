@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xiaohe.english.network.ApiClient
 import com.xiaohe.english.ui.screens.CatalogueDetailScreen
+import com.xiaohe.english.ui.screens.DiagnosticsScreen
 import com.xiaohe.english.ui.screens.HomeScreen
 import com.xiaohe.english.ui.screens.HomeworkDetailScreen
 import com.xiaohe.english.ui.screens.HomeworkUnitScreen
@@ -31,6 +32,7 @@ object Routes {
     const val WORK_LIST = "work"
     const val HOMEWORK_DETAIL = "homework/{homeworkId}"
     const val HOMEWORK_UNIT = "homework-unit/{catalogueId}/{title}"
+    const val DIAGNOSTICS = "diagnostics"
 }
 
 @Composable
@@ -61,6 +63,7 @@ fun AppRoot(isLoggedIn: Boolean) {
                 },
                 onOpenStudy = { nav.navigate(Routes.STUDY) },
                 onOpenWork = { nav.navigate(Routes.WORK_LIST) },
+                onOpenDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) },
             )
         }
         composable(Routes.STUDY) {
@@ -97,6 +100,9 @@ fun AppRoot(isLoggedIn: Boolean) {
                 exerciseId = id,
                 onBack = { nav.popBackStack() },
             )
+        }
+        composable(Routes.DIAGNOSTICS) {
+            DiagnosticsScreen(onBack = { nav.popBackStack() })
         }
         composable(Routes.WORK_LIST) {
             WorkScreen(

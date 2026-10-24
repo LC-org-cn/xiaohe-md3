@@ -15,17 +15,31 @@ class XiaoheApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // 与原版 XiaoheEnglishApp.onCreate 初始化顺序一致
-        CrashLogUploader.initialize(this)
-        Log.d("XiaoheApp", "崩溃日志收集器已初始化")
-        AudioLogManager.init(this)
-        if (WeChatManager.init(this)) {
-            Log.d("XiaoheApp", "微信SDK初始化成功")
-        } else {
-            Log.w("XiaoheApp", "微信SDK初始化失败，分享功能可能不可用")
+        // 任何子系统初始化失败都不允许拖垮整个应用（与原版顺序一致，但加防御）
+        try {
+            CrashLogUploader.initialize(this)
+        } catch (t: Throwable) {
+            Log.e("XiaoheApp", "CrashLogUploader init failed", t)
         }
-        tokenManager = TokenManager(this)
-        SessionStore.tokenManager = tokenManager
-        ApiClient.init(tokenManager)
+        try {
+            AudioLogManager.init(this)
+        } catch (t: Throwable) {
+            Log.e("XiaoheApp", "AudioLogManager init failed", t)
+        }
+        try {
+            if (WeChatManager.init(this)) Log.d("XiaoheApp", "微信SDK初始化成功")
+            else Log.w("XiaoheApp", "微信SDK初始化失败，分享功能可能不可用")
+        } catch (t: Throwable) {
+            Log.e("XiaoheApp", "WeChatManager init failed", t)
+        }
+        try {
+            tokenManager = TokenManager(this)
+            SessionStore.tokenManager = tokenManager
+            ApiClient.init(tokenManager)
+        } catch (t: Throwable) {
+            Log.e("XiaoheApp", "network init failed", t)
+            tokenManager = TokenManager(this)
+            SessionStore.tokenManager = tokenManager
+        }
     }
 }

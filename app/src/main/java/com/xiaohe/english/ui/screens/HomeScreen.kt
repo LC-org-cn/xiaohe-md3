@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: () -> Unit = {}) {
+fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: () -> Unit = {}, onOpenDiagnostics: () -> Unit = {}) {
     var tab by remember { mutableIntStateOf(0) }
     var indexData by remember { mutableStateOf<IndexDataResponse?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -102,7 +102,7 @@ fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: (
         when (tab) {
             0 -> HomeTab(indexData, loading, error, padding, onLogout, onOpenWork)
             1 -> StudyTab(padding, onOpenStudy)
-            2 -> ProfileTab(padding, onLogout)
+            2 -> ProfileTab(padding, onLogout, onOpenDiagnostics)
         }
     }
 }
@@ -238,7 +238,7 @@ private fun StudyTab(padding: androidx.compose.foundation.layout.PaddingValues, 
 }
 
 @Composable
-private fun ProfileTab(padding: androidx.compose.foundation.layout.PaddingValues, onLogout: () -> Unit) {
+private fun ProfileTab(padding: androidx.compose.foundation.layout.PaddingValues, onLogout: () -> Unit, onOpenDiagnostics: () -> Unit = {}) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
@@ -298,6 +298,9 @@ private fun ProfileTab(padding: androidx.compose.foundation.layout.PaddingValues
             }
 
             Spacer(Modifier.weight(1f))
+            OutlinedButton(onClick = onOpenDiagnostics, modifier = Modifier.fillMaxWidth()) {
+                Text("诊断信息（上报错误用）")
+            }
             Button(
                 onClick = {
                     com.xiaohe.english.data.SessionStore.clear()

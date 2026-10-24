@@ -144,17 +144,23 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
                     loading = true
                     scope.launch {
                         try {
-                            val token = if (mode == "account") {
-                                ApiClient.auth.loginByUsername(LoginRequest(username, password)).data
+                            val resp = if (mode == "account") {
+                                ApiClient.auth.loginByUsername(LoginRequest(username, password))
                             } else {
-                                ApiClient.auth.loginByMobile(PhoneLoginRequest(mobile, smsCode)).data
+                                ApiClient.auth.loginByMobile(PhoneLoginRequest(mobile, smsCode))
                             }
-                            if (token != null && !token.accessToken.isNullOrEmpty()) {
+                            val token = resp.data
+                            if (resp.code != 0) {
+                                snackbar.showSnackbar("登录失败：" + (resp.msg ?: "错误码 " + resp.code))
+                            } else if (token != null && !token.accessToken.isNullOrEmpty()) {
                                 SessionStore.save(token)
                                 onLoginSuccess()
                             } else {
                                 snackbar.showSnackbar("登录失败：令牌为空")
                             }
+                        } catch (e: retrofit2.HttpException) {
+                            val body = try { e.response()?.errorBody()?.string() } catch (_: Exception) { null }
+                            snackbar.showSnackbar("登录失败：HTTP " + e.code() + (body?.take(120) ?: ""))
                         } catch (e: Exception) {
                             snackbar.showSnackbar("登录失败：" + (e.message ?: "网络错误"))
                         } finally {
