@@ -30,7 +30,7 @@ object OssDirectUploader {
             timeZone = TimeZone.getTimeZone("GMT")
         }.format(Date())
         val stringToSign = "PUT\n\napplication/json\n$gmt\n/sidlog/$objectName"
-        val signature = calculateSignature(stringToSign, ACCESS_KEY_SECRET)
+        val signature = calculateSignature(stringToSign, accessKeySecret)
         val authorization = "OSS $accessKeyId:$signature"
 
         val conn = URL("https://$ENDPOINT/$objectName").openConnection() as HttpURLConnection
