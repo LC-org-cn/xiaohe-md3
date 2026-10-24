@@ -87,7 +87,7 @@ fun SpeakingExerciseScreen(
         return
     }
     result?.let { r ->
-        ResultView(r.userScore, r.totalCount, r.correctCount, r.accuracy, onBack = onBack)
+        SpeakingResultView(r.userScore, r.totalCount, r.correctCount, r.accuracy, onBack = onBack)
         return
     }
 
@@ -117,7 +117,7 @@ fun SpeakingExerciseScreen(
                     Text("请朗读", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimaryContainer)
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        q.referenceText ?: q.questionContent ?: q.questionTitle ?: ""
+                        q.referenceText ?: q.questionContent ?: q.questionTitle ?: "",
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -242,5 +242,22 @@ private fun ScoreRow(label: String, v: Float?) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
         Text(if (v != null) String.format("%.1f", v) else "—", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+    }
+}
+@Composable
+private fun SpeakingResultView(score: Int, totalCount: Int, correctCount: Int, accuracy: Float, onBack: () -> Unit) {
+    Column(
+        Modifier.fillMaxSize().padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text("练习完成", style = MaterialTheme.typography.headlineSmall)
+        Spacer(Modifier.height(24.dp))
+        Text("$score", style = MaterialTheme.typography.displayLarge, color = MaterialTheme.colorScheme.primary)
+        Text("总分", style = MaterialTheme.typography.labelLarge)
+        Spacer(Modifier.height(24.dp))
+        Text("完成 $totalCount 题 · 平均得分 ${(accuracy * 100).toInt()}%", style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(32.dp))
+        Button(onClick = onBack) { Text("返回") }
     }
 }

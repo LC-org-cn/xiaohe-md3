@@ -13,14 +13,18 @@ import com.xiaohe.english.network.ApiClient
 import com.xiaohe.english.ui.screens.CatalogueDetailScreen
 import com.xiaohe.english.ui.screens.HomeScreen
 import com.xiaohe.english.ui.screens.ListeningExerciseScreen
+import com.xiaohe.english.ui.screens.LoginScreen
 import com.xiaohe.english.ui.screens.SpeakingExerciseScreen
 import com.xiaohe.english.ui.screens.StudyScreen
-import com.xiaohe.english.ui.screens.LoginScreen
 
 object Routes {
     const val LOGIN = "login"
     const val HOME = "home"
     const val SPLASH = "splash"
+    const val STUDY = "study"
+    const val CATALOGUE_DETAIL = "catalogue/{catalogueId}/{type}"
+    const val LISTENING_EXERCISE = "exercise/listening/{exerciseId}"
+    const val SPEAKING_EXERCISE = "exercise/speaking/{exerciseId}"
 }
 
 @Composable
@@ -60,9 +64,7 @@ fun AppRoot(isLoggedIn: Boolean) {
                 },
             )
         }
-        composable(
-            Routes.CATALOGUE_DETAIL,
-        ) { entry ->
+        composable(Routes.CATALOGUE_DETAIL) { entry ->
             val id = entry.arguments?.getString("catalogueId") ?: ""
             val type = entry.arguments?.getString("type") ?: "listening"
             CatalogueDetailScreen(

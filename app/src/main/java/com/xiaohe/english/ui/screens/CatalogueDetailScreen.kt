@@ -33,7 +33,7 @@ fun CatalogueDetailScreen(
     LaunchedEffect(catalogueId) {
         scope.launch {
             loading = true; error = null
-            runCatching { ApiClient.study.getExercisesSpecialCatalogueDetail(catalogueId, 1, 50, null, null, "", "") }
+            runCatching { ApiClient.material.getExercisesSpecialCatalogueDetail(catalogueId, 1, 50, null, null, "", "") }
                 .onSuccess { r ->
                     details = r.data?.list ?: emptyList()
                     title = details.firstOrNull()?.title ?: (if (type == "listening") "专项听力" else "专项口语")
