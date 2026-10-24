@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onLogout: () -> Unit) {
+fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}) {
     var tab by remember { mutableIntStateOf(0) }
     var indexData by remember { mutableStateOf<IndexDataResponse?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -100,7 +100,7 @@ fun HomeScreen(onLogout: () -> Unit) {
     ) { padding ->
         when (tab) {
             0 -> HomeTab(indexData, loading, error, padding, onLogout)
-            1 -> StudyTab(padding)
+            1 -> StudyTab(padding, onOpenStudy)
             2 -> ProfileTab(padding, onLogout)
         }
     }
@@ -201,83 +201,21 @@ private fun SectionHeader(text: String) {
 }
 
 @Composable
-private fun StudyTab(padding: androidx.compose.foundation.layout.PaddingValues) {
+private fun StudyTab(padding: androidx.compose.foundation.layout.PaddingValues, onOpenStudy: () -> Unit) {
     Column(Modifier.fillMaxSize().padding(padding).padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("自主学习", style = MaterialTheme.typography.titleLarge)
-        Text("模块建设中：单词、听力、口语、配音将在此开放。", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-    }
-}
-
-@Composable
-private fun ProfileTab(padding: androidx.compose.foundation.layout.PaddingValues, onLogout: () -> Unit) {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val scope = androidx.compose.runtime.rememberCoroutineScope()
-    val snackbar = remember { SnackbarHostState() }
-    var username by remember { mutableStateOf<String?>(null) }
-
-    // 拉取用户信息（同原版 Profile 页数据源）
-    androidx.compose.runtime.LaunchedEffect(Unit) {
-        scope.launch {
-            runCatching {
-                ApiClient.user.getStudentInfo()
-            }.onSuccess { resp ->
-                username = resp.data?.username ?: resp.data?.id
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        ) {
+            Column(Modifier.padding(24.dp)) {
+                Text("专项练习", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                Spacer(Modifier.height(4.dp))
+                Text("听力 · 口语（跟读评测）", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
             }
         }
-    }
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(snackbar) },
-    ) { innerPadding ->
-        Column(
-            Modifier.fillMaxSize().padding(padding).padding(innerPadding).padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Text("我的", style = MaterialTheme.typography.titleLarge)
-            Spacer(Modifier.height(8.dp))
-
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(20.dp)) {
-                    Text(username ?: "同学", style = MaterialTheme.typography.titleMedium)
-                    Spacer(Modifier.height(4.dp))
-                    Text("小禾英语通 · MD3 版", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-
-            // 续费/购买 —— 与原版 ProfileViewModel.goRenewal 一致：微信分享购买链接
-            Button(
-                onClick = {
-                    val user = username ?: ""
-                    val buyUrl = com.xiaohe.english.utils.ShareConfig.BUY_URL + "?username=" + java.net.URLEncoder.encode(user, "UTF-8")
-                    com.xiaohe.english.wechat.WeChatManager.shareWebPage(
-                        context = context,
-                        title = com.xiaohe.english.utils.ShareConfig.SHARE_TITLE,
-                        description = com.xiaohe.english.utils.ShareConfig.SHARE_SUMMARY,
-                        url = buyUrl,
-                        imageUrl = com.xiaohe.english.utils.ShareConfig.SHARE_IMAGE_URL,
-                    ) { ok ->
-                        scope.launch {
-                            snackbar.showSnackbar(if (ok) "已唤起微信" else "分享失败：请确认已安装微信")
-                        }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-            ) {
-                Text("续费 · 微信分享给家长")
-            }
-
-            Spacer(Modifier.weight(1f))
-            Button(
-                onClick = {
-                    com.xiaohe.english.data.SessionStore.clear()
-                    onLogout()
-                },
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.errorContainer, contentColor = MaterialTheme.colorScheme.onErrorContainer),
-            ) {
-                Text("退出登录")
-            }
+        Button(onClick = onOpenStudy, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large) {
+            Text("进入自主学习")
         }
     }
 }

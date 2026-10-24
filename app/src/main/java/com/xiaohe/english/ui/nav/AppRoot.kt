@@ -10,7 +10,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.xiaohe.english.network.ApiClient
+import com.xiaohe.english.ui.screens.CatalogueDetailScreen
 import com.xiaohe.english.ui.screens.HomeScreen
+import com.xiaohe.english.ui.screens.ListeningExerciseScreen
+import com.xiaohe.english.ui.screens.SpeakingExerciseScreen
+import com.xiaohe.english.ui.screens.StudyScreen
 import com.xiaohe.english.ui.screens.LoginScreen
 
 object Routes {
@@ -40,10 +44,50 @@ fun AppRoot(isLoggedIn: Boolean) {
             })
         }
         composable(Routes.HOME) {
-            HomeScreen(onLogout = {
-                authed = false
-                nav.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
-            })
+            HomeScreen(
+                onLogout = {
+                    authed = false
+                    nav.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
+                },
+                onOpenStudy = { nav.navigate(Routes.STUDY) },
+            )
+        }
+        composable(Routes.STUDY) {
+            StudyScreen(
+                onBack = { nav.popBackStack() },
+                onOpenCatalogueDetail = { id, type ->
+                    nav.navigate("catalogue/" + id + "/" + type)
+                },
+            )
+        }
+        composable(
+            Routes.CATALOGUE_DETAIL,
+        ) { entry ->
+            val id = entry.arguments?.getString("catalogueId") ?: ""
+            val type = entry.arguments?.getString("type") ?: "listening"
+            CatalogueDetailScreen(
+                catalogueId = id,
+                type = type,
+                onBack = { nav.popBackStack() },
+                onOpenExercise = { exerciseId, t ->
+                    nav.navigate("exercise/" + t + "/" + exerciseId)
+                },
+            )
+        }
+        composable(Routes.LISTENING_EXERCISE) { entry ->
+            val id = entry.arguments?.getString("exerciseId") ?: ""
+            ListeningExerciseScreen(
+                exerciseId = id,
+                onBack = { nav.popBackStack() },
+                onFinish = { _, _ -> nav.popBackStack() },
+            )
+        }
+        composable(Routes.SPEAKING_EXERCISE) { entry ->
+            val id = entry.arguments?.getString("exerciseId") ?: ""
+            SpeakingExerciseScreen(
+                exerciseId = id,
+                onBack = { nav.popBackStack() },
+            )
         }
     }
 }
