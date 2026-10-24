@@ -1,0 +1,11 @@
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+captures/
+hs_err_pid*.log
+*.keystore.bak
+.DS_Store
