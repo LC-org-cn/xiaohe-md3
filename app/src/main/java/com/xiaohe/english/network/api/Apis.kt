@@ -6,7 +6,7 @@ import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface AuthApiService {
-    @POST("/app-api/member/auth/loginByMobile")
+    @POST("/app-api/member/auth/sms-login")
     suspend fun loginByMobile(@Body request: PhoneLoginRequest, @Header(ApiConstants.HEADER_TENANT_ID) tenantId: String = ApiConstants.TENANT_ID): BaseResponse<TokenInfo>
 
     @POST("/app-api/member/auth/loginByUsername")
@@ -21,7 +21,7 @@ interface AuthApiService {
     @POST("/app-api/member/auth/send-sms-code")
     suspend fun sendSmsCode(@Query("mobile") mobile: String, @Query("scene") scene: Int): BaseResponse<Any>
 
-    @PUT("/app-api/member/auth/validate-sms-code")
+    @POST("/app-api/member/auth/validate-sms-code")
     suspend fun validateSmsCode(@Body body: Map<String, String>): BaseResponse<Any>
 }
 
