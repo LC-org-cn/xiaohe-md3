@@ -32,13 +32,18 @@ fun HomeworkDetailScreen(
     LaunchedEffect(homeworkId) {
         scope.launch {
             loading = true; error = null
-            // 先取作业标题
-            runCatching { ApiClient.work.getHomeworkPublishStudent(homeworkId.toString()) }
-                .onSuccess { title = it.data?.homeworkTitle ?: "作业" }
-            // 原版流：getExercisesById 创建/取学生练习记录
+            // 原版流：getExercisesById 创建/取学生练习记录（作业与考试练习共用此入口）
             runCatching { ApiClient.work.getExercisesById(homeworkId.toString()) }
-                .onSuccess { r -> recordInfo = r.data?.exercisesStudentRecordInfo }
+                .onSuccess { r ->
+                    recordInfo = r.data?.exercisesStudentRecordInfo
+                    recordInfo?.exercisesName?.let { n -> title = n }
+                }
                 .onFailure { error = it.message }
+            // 作业标题兜底（练习记录无名称时再查作业表）
+            if (title == "作业") {
+                runCatching { ApiClient.work.getHomeworkPublishStudent(homeworkId.toString()) }
+                    .onSuccess { it.data?.homeworkTitle?.let { t -> title = t } }
+            }
             loading = false
         }
     }

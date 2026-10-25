@@ -3,6 +3,7 @@ package com.xiaohe.english.ui.screens
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,9 +57,15 @@ import com.xiaohe.english.network.ApiClient
 import com.xiaohe.english.network.model.IndexDataResponse
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
-fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: () -> Unit = {}, onOpenDiagnostics: () -> Unit = {}) {
+fun HomeScreen(
+    onLogout: () -> Unit,
+    onOpenStudy: () -> Unit = {},
+    onOpenWork: () -> Unit = {},
+    onOpenDiagnostics: () -> Unit = {},
+    onNavigate: (String) -> Unit = {},
+) {
     var tab by remember { mutableIntStateOf(0) }
     var indexData by remember { mutableStateOf<IndexDataResponse?>(null) }
     var loading by remember { mutableStateOf(true) }
@@ -101,7 +108,7 @@ fun HomeScreen(onLogout: () -> Unit, onOpenStudy: () -> Unit = {}, onOpenWork: (
         },
     ) { padding ->
         when (tab) {
-            0 -> HomeTab(indexData, loading, error, padding, onLogout, onOpenWork)
+            0 -> HomeTab(indexData, loading, error, padding, onLogout, onOpenWork, onNavigate)
             1 -> StudyTab(padding, onOpenStudy)
             2 -> ProfileTab(padding, onLogout, onOpenDiagnostics)
         }
@@ -116,6 +123,7 @@ private fun HomeTab(
     padding: androidx.compose.foundation.layout.PaddingValues,
     onLogout: () -> Unit,
     onOpenWork: () -> Unit = {},
+    onNavigate: (String) -> Unit = {},
 ) {
     if (loading) {
         Column(Modifier.fillMaxSize().padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
@@ -169,6 +177,22 @@ private fun HomeTab(
                     }
                     Icon(Icons.Filled.School, null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
+            }
+        }        item {
+            Text("全部功能", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+        }
+        item {
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                AssistChip(onClick = { onNavigate("exam-zone") }, label = { Text("考试专区") })
+                AssistChip(onClick = { onNavigate("vocab-notebook") }, label = { Text("单词本") })
+                AssistChip(onClick = { onNavigate("reading") }, label = { Text("拓展阅读") })
+                AssistChip(onClick = { onNavigate("fun-dubbing") }, label = { Text("趣配音") })
+                AssistChip(onClick = { onNavigate("study-stats") }, label = { Text("学习统计") })
+                AssistChip(onClick = { onNavigate("messages") }, label = { Text("消息中心") })
             }
         }
         item {

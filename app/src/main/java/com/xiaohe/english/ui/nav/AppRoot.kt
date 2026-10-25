@@ -12,7 +12,13 @@ import androidx.navigation.compose.rememberNavController
 import com.xiaohe.english.network.ApiClient
 import com.xiaohe.english.ui.screens.CatalogueDetailScreen
 import com.xiaohe.english.ui.screens.DiagnosticsScreen
+import com.xiaohe.english.ui.screens.ExamZoneScreen
+import com.xiaohe.english.ui.screens.FunDubbingScreen
 import com.xiaohe.english.ui.screens.HomeScreen
+import com.xiaohe.english.ui.screens.MessageScreen
+import com.xiaohe.english.ui.screens.ReadingScreen
+import com.xiaohe.english.ui.screens.StudyStatsScreen
+import com.xiaohe.english.ui.screens.VocabularyNotebookScreen
 import com.xiaohe.english.ui.screens.HomeworkDetailScreen
 import com.xiaohe.english.ui.screens.HomeworkUnitScreen
 import com.xiaohe.english.ui.screens.WorkScreen
@@ -33,6 +39,12 @@ object Routes {
     const val HOMEWORK_DETAIL = "homework/{homeworkId}"
     const val HOMEWORK_UNIT = "homework-unit/{catalogueId}/{title}"
     const val DIAGNOSTICS = "diagnostics"
+    const val EXAM_ZONE = "exam-zone"
+    const val VOCAB_NOTEBOOK = "vocab-notebook"
+    const val MESSAGES = "messages"
+    const val STUDY_STATS = "study-stats"
+    const val READING = "reading"
+    const val FUN_DUBBING = "fun-dubbing"
 }
 
 @Composable
@@ -67,6 +79,7 @@ fun AppRoot(isLoggedIn: Boolean) {
                 onOpenStudy = { nav.navigate(Routes.STUDY) },
                 onOpenWork = { nav.navigate(Routes.WORK_LIST) },
                 onOpenDiagnostics = { nav.navigate(Routes.DIAGNOSTICS) },
+                onNavigate = { route -> nav.navigate(route) },
             )
         }
         composable(Routes.STUDY) {
@@ -136,5 +149,18 @@ fun AppRoot(isLoggedIn: Boolean) {
                 onFinished = { nav.popBackStack() },
             )
         }
+        composable(Routes.EXAM_ZONE) {
+            ExamZoneScreen(
+                onBack = { nav.popBackStack() },
+                onOpenPaper = { exercisesId, _ ->
+                    nav.navigate("homework/" + exercisesId)
+                },
+            )
+        }
+        composable(Routes.VOCAB_NOTEBOOK) { VocabularyNotebookScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.MESSAGES) { MessageScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.STUDY_STATS) { StudyStatsScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.READING) { ReadingScreen(onBack = { nav.popBackStack() }) }
+        composable(Routes.FUN_DUBBING) { FunDubbingScreen(onBack = { nav.popBackStack() }) }
     }
 }

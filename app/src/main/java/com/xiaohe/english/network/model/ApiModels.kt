@@ -155,7 +155,11 @@ data class CurrentTextReadArticle(
 )
 data class BookFunDubbingInfo(
     val id: Long = 0, val chapterInfoId: Long? = null, val bookInfoId: Long? = null,
-    val title: String? = null, val coverUrl: String? = null, val sentenceCount: Int = 0,
+    @com.google.gson.annotations.SerializedName("funDubbingTitle") val title: String? = null,
+    @com.google.gson.annotations.SerializedName("funDubbingVideo") val videoUrl: String? = null,
+    @com.google.gson.annotations.SerializedName("funDubbingVideoImage") val videoImage: String? = null,
+    val bookFunDubbingSentenceDOList: List<BookFunDubbingSentence>? = null,
+    val bookFunDubbingKeyWordDOList: List<BookFunDubbingKeyWord>? = null,
 )
 data class BookFunDubbingSentence(
     val id: Long = 0, val sentenceContent: String? = null, val sentenceAudio: String? = null,
