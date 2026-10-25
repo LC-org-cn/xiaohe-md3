@@ -28,7 +28,7 @@ fun ExamZoneScreen(
     var selectedZone by remember { mutableStateOf(0) }
     var papers by remember { mutableStateOf(listOf<com.xiaohe.english.network.model.ExercisesSpecialCatalogueDetail>()) }
     var papersLoading by remember { mutableStateOf(false) }
-    var studentId by remember { mutableStateOf<Long?>(null) }
+    var studentId by remember { mutableStateOf<String?>(null) }
     var starting by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -58,7 +58,7 @@ fun ExamZoneScreen(
         scope.launch {
             runCatching {
                 ApiClient.work.createPractice(
-                    mapOf("studentId" to (studentId ?: 0L), "studyExercisesInfoId" to studyExercisesInfoId),
+                    mapOf("studentId" to (studentId ?: ""), "studyExercisesInfoId" to studyExercisesInfoId),
                 )
             }.onSuccess { r ->
                 val eid = r.data

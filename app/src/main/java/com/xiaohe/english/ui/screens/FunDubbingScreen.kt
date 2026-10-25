@@ -79,6 +79,7 @@ fun FunDubbingScreen(onBack: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FunDubbingDetail(info: BookFunDubbingInfo, onBack: () -> Unit) {
     val context = LocalContext.current

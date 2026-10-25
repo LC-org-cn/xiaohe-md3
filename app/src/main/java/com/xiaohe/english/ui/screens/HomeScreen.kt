@@ -178,7 +178,8 @@ private fun HomeTab(
                     Icon(Icons.Filled.School, null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
             }
-        }        item {
+        }
+        item {
             Text("全部功能", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
         }
         item {

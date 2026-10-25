@@ -101,12 +101,13 @@ fun StudyStatsScreen(onBack: () -> Unit) {
                                         days.forEach { d ->
                                             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                                                 val ratio = (d.studyTime / 1000).toFloat() / maxSec
+                                                val barColor = MaterialTheme.colorScheme.primary
                                                 Box(
                                                     Modifier.fillMaxWidth(0.6f).height((ratio * 110f).dp.coerceAtLeast(4.dp)),
                                                 ) {
                                                     androidx.compose.foundation.Canvas(Modifier.fillMaxSize()) {
                                                         drawRoundRect(
-                                                            color = MaterialTheme.colorScheme.primary,
+                                                            color = barColor,
                                                             cornerRadius = androidx.compose.ui.geometry.CornerRadius(8f, 8f),
                                                         )
                                                     }
