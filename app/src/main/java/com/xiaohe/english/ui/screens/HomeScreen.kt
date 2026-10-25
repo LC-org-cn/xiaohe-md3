@@ -115,6 +115,7 @@ fun HomeScreen(
     }
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun HomeTab(
     data: IndexDataResponse?,
